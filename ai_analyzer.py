@@ -1,20 +1,30 @@
-def analyze_resume(resume_text, job_description):
+import requests
+
+def analyze_resume(resume_text):
 
     prompt = f"""
-    Analyze this resume for the following job.
+    You are an AI recruiter.
 
-    Job Description:
-    {job_description}
+    Analyze the resume and return ONLY in this format:
 
-    Provide the output in JSON format:
-
-    {{
-    "summary": "",
-    "skills": [],
-    "experience_years": "",
-    "match_score": ""
-    }}
+    Name: <candidate name>
+    Skills: <comma separated skills>
+    Experience: <years>
+    Score: <score out of 10>
 
     Resume:
     {resume_text}
     """
+
+    response = requests.post(
+        "http://localhost:11434/api/generate",
+        json={
+            "model": "llama3",
+            "prompt": prompt,
+            "stream": False
+        }
+    )
+
+    result = response.json()
+
+    return result["response"]

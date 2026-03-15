@@ -1,3 +1,5 @@
 streamlit
 pypdf
 requests
+langchain
+chromadb

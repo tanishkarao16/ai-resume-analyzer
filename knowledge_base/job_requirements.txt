@@ -1,0 +1,14 @@
+Python Backend Developer Requirements
+
+Required Skills:
+Python
+REST API Development
+SQL Databases
+
+Preferred Skills:
+Docker
+AWS
+Microservices
+
+Minimum Experience:
+3 years
