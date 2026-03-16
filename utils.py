@@ -1,15 +1,28 @@
 import re
 
-def extract_candidate_info(ai_output):
+def extract_candidate_info(result):
 
-    name = re.search(r"Name:\s*(.*)", ai_output)
-    skills = re.search(r"Skills:\s*(.*)", ai_output)
-    experience = re.search(r"Experience:\s*(.*)", ai_output)
-    score = re.search(r"Score:\s*(.*)", ai_output)
+    name = "Unknown"
+    skills = "Unknown"
+    experience = "Unknown"
+    score = "0"
 
-    name = name.group(1) if name else "Unknown"
-    skills = skills.group(1) if skills else "Unknown"
-    experience = experience.group(1) if experience else "0"
-    score = score.group(1) if score else "0"
+    lines = result.split("\n")
+
+    for line in lines:
+
+        if "Name:" in line:
+            name = line.split(":")[1].strip()
+
+        if "Skills:" in line:
+            skills = line.split(":")[1].strip()
+
+        if "Experience:" in line:
+            experience = line.split(":")[1].strip()
+
+        if "Score:" in line:
+            score = line.split(":")[1].strip()
+
+    score = score.split("/")[0]
 
     return name, skills, experience, float(score)

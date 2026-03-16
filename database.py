@@ -1,37 +1,35 @@
 import sqlite3
 
-conn = sqlite3.connect("candidates.db", check_same_thread=False)
-cursor = conn.cursor()
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS candidates(
-id INTEGER PRIMARY KEY AUTOINCREMENT,
-name TEXT,
-skills TEXT,
-experience TEXT,
-score REAL
-)
-""")
-
-conn.commit()
+DB_NAME = "candidates.db"
 
 
 def insert_candidate(name, skills, experience, score):
 
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
     cursor.execute("""
-    INSERT INTO candidates(name, skills, experience, score)
-    VALUES (?, ?, ?, ?)
+        INSERT INTO candidates (name, skills, experience, score)
+        VALUES (?, ?, ?, ?)
     """, (name, skills, experience, score))
 
     conn.commit()
+    conn.close()
 
 
 def get_ranked_candidates():
 
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
     cursor.execute("""
-    SELECT name, skills, experience, score
-    FROM candidates
-    ORDER BY score DESC
+        SELECT name, skills, experience, score
+        FROM candidates
+        ORDER BY score DESC
     """)
 
-    return cursor.fetchall()
+    candidates = cursor.fetchall()
+
+    conn.close()
+
+    return candidates

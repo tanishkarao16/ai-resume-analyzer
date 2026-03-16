@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+
 from resume_parser import extract_text_from_pdf
 from ai_analyzer import analyze_resume
 from database import insert_candidate, get_ranked_candidates
@@ -6,38 +8,47 @@ from utils import extract_candidate_info
 
 st.title("AI Resume Analyzer")
 
-st.write("Upload a resume and analyze the candidate using AI.")
+st.write("Upload resumes and analyze candidates using AI.")
 
-uploaded_file = st.file_uploader("Upload Resume", type=["pdf"])
+uploaded_files = st.file_uploader(
+    "Upload Resumes",
+    type=["pdf"],
+    accept_multiple_files=True
+)
 
-if uploaded_file:
+if uploaded_files:
 
-    text = extract_text_from_pdf(uploaded_file)
+    if st.button("Analyze Resumes"):
 
-    if st.button("Analyze Resume"):
+        progress = st.progress(0)
 
-        with st.spinner("Analyzing resume with AI..."):
-            result = analyze_resume(text)
+        for i, uploaded_file in enumerate(uploaded_files):
 
-        st.subheader("AI Analysis Result")
-        st.write(result)
+            text = extract_text_from_pdf(uploaded_file)
 
-        # Extract structured data
-        name, skills, experience, score = extract_candidate_info(result)
+            with st.spinner(f"Analyzing {uploaded_file.name}..."):
+                result = analyze_resume(text)
 
-        # Save candidate
-        insert_candidate(name, skills, experience, score)
+            name, skills, experience, score = extract_candidate_info(result)
 
-        st.success("Candidate saved successfully!")
+            insert_candidate(name, skills, experience, score)
 
-# Candidate Rankings Section
+            progress.progress((i + 1) / len(uploaded_files))
+
+        st.success("All candidates analyzed and saved!")
+
+# Candidate Rankings
 st.subheader("Candidate Rankings")
 
 candidates = get_ranked_candidates()
 
-for c in candidates:
-    st.write(f"Name: {c[0]}")
-    st.write(f"Skills: {c[1]}")
-    st.write(f"Experience: {c[2]}")
-    st.write(f"Score: {c[3]}")
-    st.write("---")
+if candidates:
+    df = pd.DataFrame(
+        candidates,
+        columns=["Name", "Skills", "Experience", "Score"]
+    )
+
+    st.table(df)
+
+else:
+    st.info("No candidates analyzed yet.")
