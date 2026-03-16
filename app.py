@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-
+from job_matcher import compute_match_score
 from resume_parser import extract_text_from_pdf
 from ai_analyzer import analyze_resume
 from database import insert_candidate, get_ranked_candidates
@@ -9,6 +9,8 @@ from utils import extract_candidate_info
 st.title("AI Resume Analyzer")
 
 st.write("Upload resumes and analyze candidates using AI.")
+
+job_description = st.text_area("Paste Job Description")
 
 uploaded_files = st.file_uploader(
     "Upload Resumes",
@@ -52,3 +54,7 @@ if candidates:
 
 else:
     st.info("No candidates analyzed yet.")
+    
+match_score = compute_match_score(job_description, text)
+
+st.write(f"Match Score for {uploaded_file.name}: {match_score}%")
