@@ -1,60 +1,18 @@
 import streamlit as st
-import pandas as pd
-from job_matcher import compute_match_score
-from resume_parser import extract_text_from_pdf
-from ai_analyzer import analyze_resume
-from database import insert_candidate, get_ranked_candidates
-from utils import extract_candidate_info
+
+st.set_page_config(page_title="AI Resume Analyzer", layout="wide")
 
 st.title("AI Resume Analyzer")
 
-st.write("Upload resumes and analyze candidates using AI.")
+st.write("Welcome to the AI-powered candidate screening system.")
 
-job_description = st.text_area("Paste Job Description")
+st.markdown("""
+### Features
 
-uploaded_files = st.file_uploader(
-    "Upload Resumes",
-    type=["pdf"],
-    accept_multiple_files=True
-)
+• Upload and analyze resumes using AI  
+• Extract candidate skills and experience  
+• Rank candidates automatically  
+• Match resumes with job descriptions  
 
-if uploaded_files:
-
-    if st.button("Analyze Resumes"):
-
-        progress = st.progress(0)
-
-        for i, uploaded_file in enumerate(uploaded_files):
-
-            text = extract_text_from_pdf(uploaded_file)
-
-            with st.spinner(f"Analyzing {uploaded_file.name}..."):
-                result = analyze_resume(text)
-
-            name, skills, experience, score = extract_candidate_info(result)
-
-            insert_candidate(name, skills, experience, score)
-
-            progress.progress((i + 1) / len(uploaded_files))
-
-        st.success("All candidates analyzed and saved!")
-
-# Candidate Rankings
-st.subheader("Candidate Rankings")
-
-candidates = get_ranked_candidates()
-
-if candidates:
-    df = pd.DataFrame(
-        candidates,
-        columns=["Name", "Skills", "Experience", "Score"]
-    )
-
-    st.table(df)
-
-else:
-    st.info("No candidates analyzed yet.")
-    
-match_score = compute_match_score(job_description, text)
-
-st.write(f"Match Score for {uploaded_file.name}: {match_score}%")
+Use the **sidebar navigation** to access different features.
+""")
