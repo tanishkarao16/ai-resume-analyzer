@@ -1,10 +1,7 @@
 streamlit
-pdfplumber
 pandas
-scikit-learn
-faiss-cpu
-requests
-torch==2.2.2
-transformers==4.41.2
-sentence-transformers==3.0.1
-accelerate==0.30.1
+matplotlib
+sentence-transformers
+transformers
+torch
+pdfplumber

@@ -1,18 +1,23 @@
 import streamlit as st
 
-st.set_page_config(page_title="AI Resume Analyzer", layout="wide")
+st.set_page_config(
+    page_title="AI Resume Analyzer",
+    page_icon="📄",
+    layout="wide"
+)
 
 st.title("AI Resume Analyzer")
 
-st.write("Welcome to the AI-powered candidate screening system.")
-
 st.markdown("""
-### Features
+### AI Powered Candidate Screening System
 
-• Upload and analyze resumes using AI  
-• Extract candidate skills and experience  
-• Rank candidates automatically  
-• Match resumes with job descriptions  
+This tool allows recruiters to:
 
-Use the **sidebar navigation** to access different features.
+• Upload multiple resumes  
+• Extract candidate skills automatically  
+• Rank candidates using AI  
+• Match resumes to job descriptions  
+• View candidate analytics
 """)
+
+st.info("Use the sidebar to navigate through the application.")
