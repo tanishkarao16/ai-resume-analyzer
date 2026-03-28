@@ -1,14 +1,20 @@
 import pdfplumber
 
-def extract_text_from_pdf(file):
+
+def parse_resume(uploaded_file):
+    """
+    Extracts text from uploaded PDF resume
+    """
 
     text = ""
 
-    with pdfplumber.open(file) as pdf:
-        for page in pdf.pages:
-            extracted = page.extract_text()
+    with pdfplumber.open(uploaded_file) as pdf:
 
-            if extracted:
-                text += extracted + "\n"
+        for page in pdf.pages:
+
+            page_text = page.extract_text()
+
+            if page_text:
+                text += page_text
 
     return text

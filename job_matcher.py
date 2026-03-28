@@ -1,15 +1,46 @@
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+import re
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+def compute_match_score(candidate_skills, job_description):
+    """
+    Calculate match score based on overlapping skills
+    """
 
-def compute_match_score(job_description, resume_text):
+    if not job_description:
+        return 50
 
-    embeddings = model.encode([job_description, resume_text])
+    candidate_skills_list = [
+        skill.strip().lower() for skill in candidate_skills.split(",")
+    ]
 
-    similarity = cosine_similarity(
-        [embeddings[0]],
-        [embeddings[1]]
-    )[0][0]
+    job_text = job_description.lower()
 
-    return round(similarity * 100, 2)
+    score = 0
+
+    for skill in candidate_skills_list:
+        if skill in job_text:
+            score += 20
+
+    return min(score, 100)
+
+
+def skill_gap_analysis(candidate_skills, job_description):
+    """
+    Identify missing skills compared to job description
+    """
+
+    if not job_description:
+        return []
+
+    candidate_skills_list = [
+        skill.strip().lower() for skill in candidate_skills.split(",")
+    ]
+
+    job_words = re.findall(r"\b[a-zA-Z]+\b", job_description.lower())
+
+    missing_skills = []
+
+    for word in job_words:
+        if word not in candidate_skills_list and len(word) > 3:
+            missing_skills.append(word)
+
+    return list(set(missing_skills))[:10]

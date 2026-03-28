@@ -1,30 +1,35 @@
-import requests
+import re
 
-def analyze_resume(resume_text):
 
-    prompt = f"""
-    You are an AI recruiter.
+def analyze_resume(text):
 
-    Analyze the resume and return ONLY in this format:
+    name = text.split("\n")[0]
 
-    Name: <candidate name>
-    Skills: <comma separated skills>
-    Experience: <years>
-    Score: <score out of 10>
+    skills_list = [
+        "python","sql","excel","java",
+        "machine learning","data analysis",
+        "react","javascript","flutter",
+        "aws","docker","pandas"
+    ]
 
-    Resume:
-    {resume_text}
-    """
+    skills_found = []
 
-    response = requests.post(
-        "http://localhost:11434/api/generate",
-        json={
-            "model": "llama3",
-            "prompt": prompt,
-            "stream": False
-        }
-    )
+    text_lower = text.lower()
 
-    result = response.json()
+    for skill in skills_list:
 
-    return result["response"]
+        if skill in text_lower:
+            skills_found.append(skill)
+
+    experience = "Not specified"
+
+    match = re.search(r'(\d+)\s+years', text_lower)
+
+    if match:
+        experience = match.group(0)
+
+    return {
+        "name": name,
+        "skills": ", ".join(skills_found),
+        "experience": experience
+    }
